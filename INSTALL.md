@@ -1,54 +1,54 @@
-# RTL8852AU Treiber - Installationsanleitung
+# RTL8852AU Driver - Installation Guide
 
-## Übersicht
+## Overview
 
-Dies ist der **gepatchte rtl8852au Treiber** für Kernel 6.13–6.17+, der für das **TP-Link TX20U Plus** (Realtek 8832AU/8852AU Chipset) angepasst wurde.
+This is the **patched rtl8852au driver** for Kernel 6.13–6.17+, adapted for the **TP-Link TX20U Plus** (Realtek 8832AU/8852AU chipset).
 
-**Gerät:** TP-Link TX20U Plus (USB-ID: `2357:013f`)
+**Device:** TP-Link TX20U Plus (USB-ID: `2357:013f`)
 **Chipset:** Realtek RTL8832AU / RTL8852AU
 **Support:** WiFi 6 (802.11AX), 2.4 GHz & 5 GHz
 
-## Voraussetzungen
+## Prerequisites
 
 ```bash
-# Für Ubuntu/Debian/Linux Mint
+# For Ubuntu/Debian/Linux Mint
 sudo apt-get update
 sudo apt-get install make gcc linux-headers-$(uname -r) build-essential git
 ```
 
-## Ersteinstallation
+## First Installation
 
-**WICHTIG:** Dieser Treiber enthält bereits alle Patches für Kernel 6.13–6.17. Du musst nichts mehr patchen.
+**IMPORTANT:** This driver already includes all patches for Kernel 6.13–6.17. You don't need to apply any patches manually.
 
-1. In den Treiber-Ordner wechseln:
+1. Navigate to the driver directory:
 ```bash
 cd /media/reddeb/home/Downloads/ArcherRTL8832AU-main/rtl8852au
 ```
 
-2. Kompilieren:
+2. Build the driver:
 ```bash
 make -j$(nproc)
 ```
 
-3. Installieren:
+3. Install the driver:
 ```bash
 sudo make install
 ```
 
-4. Modul laden:
+4. Load the module:
 ```bash
 sudo modprobe 8852au
 ```
 
-5. Interface prüfen:
+5. Check the interface:
 ```bash
 ip link show
-# Du solltest ein wlxf0a7314ab340 (oder ähnliches) Interface sehen
+# You should see a wlxf0a7314ab340 (or similar) interface
 ```
 
-## Neuinstallation nach Kernel-Update
+## Reinstallation After Kernel Update
 
-Bei einem Kernel-Update **MUSS** der Treiber neu gebaut werden:
+After a kernel update, the driver **MUST** be rebuilt:
 
 ```bash
 cd /media/reddeb/home/Downloads/ArcherRTL8832AU-main/rtl8852au
@@ -58,63 +58,63 @@ sudo make install
 sudo modprobe -r 8852au && sudo modprobe 8852au
 ```
 
-## Angewendete Patches
+## Applied Patches
 
-Dieser Treiber wurde mit folgenden Patches für Kernel-Kompatibilität versehen:
+This driver has been patched with the following kernel compatibility fixes:
 
-| Kernel-Version | Änderung |
-|----------------|----------|
-| **Alle** | `EXTRA_CFLAGS` → `ccflags-y` (Kernel 6.15+ ignoriert EXTRA_CFLAGS) |
-| **6.13+** | `MODULE_IMPORT_NS` deaktiviert, `set_monitor_channel` net_device Parameter |
-| **6.14+** | `get_txpower` link_id Parameter |
-| **6.15+** | `del_timer` → `timer_delete`, Compiler-Warnungen unterdrückt |
+| Kernel Version | Change |
+|----------------|--------|
+| **All** | `EXTRA_CFLAGS` → `ccflags-y` (Kernel 6.15+ ignores EXTRA_CFLAGS) |
+| **6.13+** | `MODULE_IMPORT_NS` disabled, `set_monitor_channel` net_device parameter |
+| **6.14+** | `get_txpower` link_id parameter |
+| **6.15+** | `del_timer` → `timer_delete`, compiler warnings suppressed |
 | **6.16+** | `from_timer` → `timer_container_of` |
-| **6.17+** | `set_wiphy_params/set_txpower/get_txpower` radio_id Parameter |
+| **6.17+** | `set_wiphy_params/set_txpower/get_txpower` radio_id parameter |
 
-## Verzeichnisse
+## Directories
 
-- **Treiber-Quellcode:** `/media/reddeb/home/Downloads/ArcherRTL8832AU-main/rtl8852au`
-- **Backup der Original-Dateien:** `/media/reddeb/home/Downloads/ArcherRTL8832AU-main/rtl8852au.bak.original`
-- **Installiertes Modul:** `/lib/modules/$(uname -r)/kernel/drivers/net/wireless/realtek/rtw89/8852au.ko`
+- **Driver source:** `/media/reddeb/home/Downloads/ArcherRTL8832AU-main/rtl8852au`
+- **Backup of original files:** `/media/reddeb/home/Downloads/ArcherRTL8832AU-main/rtl8852au.bak.original`
+- **Installed module:** `/lib/modules/$(uname -r)/kernel/drivers/net/wireless/realtek/rtw89/8852au.ko`
 
-## Fehlerbehebung
+## Troubleshooting
 
-### Modul wird nicht geladen:
+### Module not loading:
 ```bash
 sudo dmesg | tail -30
-# Prüfe auf Fehlermeldungen
+# Check for error messages
 ```
 
-### Interface erscheint nicht:
+### Interface not appearing:
 ```bash
 sudo modprobe -r 8852au
 sudo modprobe 8852au
 ip link set wlxf0a7314ab340 up
 ```
 
-### WLAN-Scan funktioniert nicht:
+### WLAN scan not working:
 ```bash
 sudo ip link set wlxf0a7314ab340 up
 sudo iwlist wlxf0a7314ab340 scan
 ```
 
-## Ursprüngliche Autoren
+## Original Authors
 
-- **Originaler Treiber-Autor:** Larry Finger (1940–2024) - GitHub: `lwfinger/rtl8852au`
-- **Patches für Kernel 6.13–6.16:** Soham Nandy, Zenm Chen (GitHub PR #115)
-- **Patch für Kernel 6.17:** Andreas Patsalos
-- **Aktuell gepflegte Forks:** `natimerry/rtl8852au`, `pulponair/rtl8852au`
+- **Original driver author:** Larry Finger (1940–2024) - GitHub: `lwfinger/rtl8852au`
+- **Patches for Kernel 6.13–6.16:** Soham Nandy, Zenm Chen (GitHub PR #115)
+- **Patch for Kernel 6.17:** Andreas Patsalos
+- **Currently maintained forks:** `natimerry/rtl8852au`, `pulponair/rtl8852au`
 
-## Testergebnis auf diesem System
+## Test Results on This System
 
-- **Betriebssystem:** Linux Mint 22.3
+- **OS:** Linux Mint 22.3
 - **Kernel:** 6.17.0-35-generic
 - **Interface:** wlxf0a7314ab340
-- **Modus:** IEEE 802.11AX (WiFi 6)
+- **Mode:** IEEE 802.11AX (WiFi 6)
 - **Bitrate:** 1.201 Gb/s
 - **Signal:** 71/100
-- **Status:** Verbunden, Internet funktioniert
+- **Status:** Connected, Internet working
 
 ---
 
-**Hinweis:** Dieser Treiber ist "out-of-tree" und muss bei jedem Kernel-Update neu gebaut werden. Wenn du das automatisieren möchtest, kann DKMS eingerichtet werden.
+**Note:** This driver is "out-of-tree" and must be rebuilt after every kernel update. If you want to automate this, DKMS can be set up.
