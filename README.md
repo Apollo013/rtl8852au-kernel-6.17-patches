@@ -1,5 +1,7 @@
 # RTL8852AU Driver - Kernel 6.13-6.17+ Patches
 
+**Tested on TP-Link TX20U Plus (USB ID: `2357:013f`)**
+
 This fork includes patches for **Linux Kernel 6.13-6.17+** compatibility. The original driver was not updated for these kernel versions, which introduced API changes.
 
 ## Applied Patches
